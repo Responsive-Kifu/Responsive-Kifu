@@ -115,7 +115,7 @@ export function nsSetSound(name){
 	}
 }
 
-function nsSoundToggle(elem){
+export function nsSoundToggle(elem) {
 	nsSoundEnabled = elem.checked;
 }
 

@@ -8,9 +8,10 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.css$/,
+        test: /\.scss$/,
         use: [{loader: 'style-loader'},
-              {loader: 'css-loader'}]
+              {loader: 'css-loader'},
+              {loader: 'sass-loader'}]
       },
       {
         test: /\.(gif|png|jpg|eot|wof|woff|woff2|ttf|svg|mp3)$/,
@@ -19,7 +20,6 @@ module.exports = {
     ],
   },
   output: {
-    filename: 'responsive-kifu.js',
     path: path.resolve(__dirname, 'dist')
   },
   plugins: [

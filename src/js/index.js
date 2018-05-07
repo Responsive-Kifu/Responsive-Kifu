@@ -1,6 +1,6 @@
 import {sgInit, sgResize, sgDraw} from './shogi13';
 import {nsSetSound, Start, nsBack, nsHead, nsTail, nsStep, nsPlay, nsSoundToggle} from './score10';
-import '../css/test2.css';
+import '../css/style.scss';
 
 function setupBottom() {
   const bottom = document.getElementById("bottom");

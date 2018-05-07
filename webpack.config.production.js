@@ -9,7 +9,8 @@ module.exports = {
       {
         test: /\.css$/,
         use: [{loader: 'style-loader'},
-              {loader: 'css-loader'}]
+              {loader: 'css-loader'},
+              {loader: 'sass-loader'}]
       },
       {
         test: /\.(gif|png|jpg|eot|wof|woff|woff2|ttf|svg|mp3)$/,

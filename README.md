@@ -1,6 +1,8 @@
 # Responsive-Kifu
 
-100%ピュア JavaScript 将棋棋譜再生ビューア　
+100%ピュア JavaScript 将棋棋譜再生ビューア
+
+[開発ページ](https://responsive-kifu.github.io/)
 
 ## 経緯
 ブログ上で将棋の棋譜を再生したいと思い、適当なソフトを探してい>ました。
@@ -21,11 +23,11 @@
 紹介記事は[ブログ](http://phazor.info/air/?p=907)に書いてあります。
 実際の使用例は、
 
-　　『[アゲアゲさんの名局をブログで再現してみる](https://phazor.info/air/?p=976)』
+『[アゲアゲさんの名局をブログで再現してみる](https://phazor.info/air/?p=976)』
 
 などをご覧ください。
 
- Enjoy your shogi life!
+Enjoy your shogi life!
 
 ## ライセンス
 

@@ -39,6 +39,20 @@ const komaJP = ["","", "玉", "飛","龍", "角", "馬","金", "銀", "全", "�
 
 // 棋譜読み込み
 
+export function loadKif(content) {
+	nsArray = nsMakeScore(content);
+
+	if ( nsArray.棋戦 != null ){
+		nsSetInfo('sctitle', nsArray.棋戦);
+	} else {
+		nsSetInfo('sctitle', 'の棋譜はありません');
+		nsSetInfo('scstage', '');
+	}
+	nsSetInfo('scyear',  nsArray.開始日時);
+	nsSetInfo('p1name',  '▲' + nsArray.先手);
+	nsSetInfo('p2name', '△'+ nsArray.後手);
+}
+
 
 export function Start(name, type){
 	// ブラウザチェック

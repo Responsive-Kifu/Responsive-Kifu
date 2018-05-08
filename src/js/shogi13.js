@@ -33,7 +33,7 @@ var sgPic = new Array();
 
 // 初期化
 export function sgInit(){
-	var parent = document.getElementById('board');
+	var parent = document.querySelector('.board');
 	sgResetCoord(parent);
 
 
@@ -117,7 +117,7 @@ export function sgInit(){
 
 // リサイズ時処理
 export function sgResize(){
-	var parent = document.getElementById('board');
+	var parent = document.querySelector('.board');
 	sgResetCoord(parent);
 
 	sgShowMark(null);
@@ -253,7 +253,7 @@ export function sgDraw(item){
 		sgDrawHand(item.h2, 'gb');
 
 		// コメント表示　item.c が null でなければ内容を表示
-		var u = document.getElementById('comment');
+		var u = document.querySelector('.comment');
 		//alert(item.c);
 		if (item.c){
 			//alert(item.c);

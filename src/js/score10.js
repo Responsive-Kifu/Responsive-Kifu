@@ -1,13 +1,8 @@
-import {httpCreateRequest, httpRead} from './http';
 import {cmMoveMark} from './shogi13';
 
 //
 // 棋譜共通処理
 //
-
-var ie6 = (navigator.userAgent.indexOf('MSIE 6.0') >= 0);
-var ie7 = (navigator.userAgent.indexOf('MSIE 7.0') >= 0);
-var ie8 = (navigator.userAgent.indexOf('MSIE 8.0') >= 0);
 
 var nsArray = new Array();
 var nsIndex = -1;// -1 っすか。
@@ -43,73 +38,14 @@ export function loadKif(content) {
 	nsArray = nsMakeScore(content);
 
 	if ( nsArray.棋戦 != null ){
-		nsSetInfo('sctitle', nsArray.棋戦);
+		nsSetInfo('.sctitle', nsArray['棋戦']);
 	} else {
-		nsSetInfo('sctitle', 'の棋譜はありません');
-		nsSetInfo('scstage', '');
+		nsSetInfo('.sctitle', 'の棋譜はありません');
+		nsSetInfo('.scstage', '');
 	}
-	nsSetInfo('scyear',  nsArray.開始日時);
-	nsSetInfo('p1name',  '▲' + nsArray.先手);
-	nsSetInfo('p2name', '△'+ nsArray.後手);
-}
-
-
-export function Start(name, type){
-	// ブラウザチェック
-	//if ( ie6 ){
-	//	alert('Internet Explorer 6 以下には対応していません');
-	//	return;
-	//}
-
-	// 棋譜
-//	var d = name.match(/^[0-9]{8}$/);
-//	var t = type.match(/^[is]$/);
-//	var q = './score.cgi';
-//	if ( (d != null) && (t != null) ){
-//		q += '?d=' + d + '&t=' + t;
-//	}
-//	var q = '..data/';
-	var q = name;
-//	alert(q);
-	var s = httpRead(q);
-//	alert(s);
-	nsArray = nsMakeScore(s);
-	nsType  = 's';
-
-//	if ( nsArray.Title != null ){
-	if ( nsArray.棋戦 != null ){
-		nsSetInfo('sctitle', nsArray.棋戦);
-		//nsSetInfo('scstage', nsArray.Stage);
-//		var list = nsArray.Stage.split(' ');
-//		nsSetInfo('scstage', list[0]);
-//		if ( list.length >= 2 ){
-//			nsSetInfo('scstage2', list[1]);
-//		}
-//		if ( nsArray.Notify != null ){
-//			nsSetInfo('scnotify', nsArray.Notify);
-//		}
-//		if ( nsArray.Notify != null ){
-//			nsSetInfo('scnotify2', nsArray.Notify2);
-//		}
-	}
-	else{
-		nsSetInfo('sctitle', 'の棋譜はありません');
-		nsSetInfo('scstage', '');
-	}
-	nsSetInfo('scyear',  nsArray.開始日時);
-	//nsSetInfo('scmonth', nsArray.OnAir.substr(4, 2));
-	//nsSetInfo('scday',   nsArray.OnAir.substr(6, 2));
-//	var p1 = nsSplitName(nsArray.Player1);
-//	var p2 = nsSplitName(nsArray.Player2);
-//	nsSetInfo('p1name',  '▲' + p1.familyname + p1.firstname + ' ' + p1.title);
-	nsSetInfo('p1name',  '▲' + nsArray.先手);
-	//nsSetInfo('p1title', p1.title);
-	//nsSetInfo('p1title2', p1.title2);
-//	nsSetInfo('p2name', '△'+ p2.familyname + p2.firstname + ' ' + p2.title);
-	nsSetInfo('p2name', '△'+ nsArray.後手);
-	//nsSetInfo('p2title', p2.title);
-	//nsSetInfo('p2title2', p2.title2);
-
+	nsSetInfo('.scyear',  nsArray['開始日時']);
+	nsSetInfo('.p1name',  '▲' + nsArray['先手']);
+	nsSetInfo('.p2name', '△'+ nsArray['後手']);
 }
 
 // 打音セット
@@ -134,8 +70,8 @@ export function nsSoundToggle(elem) {
 }
 
 // 情報をセット
-function nsSetInfo(id, value){
-	var e = document.getElementById(id);
+function nsSetInfo(q, value){
+	var e = document.querySelector(q);
 	if ( e != null ){
 		e.innerText = value;
 		e.textContent = value;
@@ -228,7 +164,7 @@ function nsMakeScore(str){
    					}
 
    					if (j.length == 1){
-   						j = "0" + j
+   						j = "0" + j;
    					}
 
    					if(pair1[1].indexOf('打') !== -1){
@@ -320,7 +256,7 @@ function nsDelayDraw(){
 	// 将棋の最終結果遅延表示
 	if ( (nsType != 'i') && (nsIndex >= nsArray.buf.length - 1) ){
 		// 最終手の移動完了と同時に表示
-		nsSetInfo('move', nsShogiResult());
+		nsSetInfo('.move', nsShogiResult());
 		// 最終手の移動完了よりさらに遅らせる場合
 		//var s = "nsSetInfo('bante', '" + nsShogiResult() + "')";
 		//setTimeout(s, 500);
@@ -358,11 +294,10 @@ function nsSetIndex(draw, index){
 		var s = '';
 		if ( (nsType == 'i') && (nsIndex >= nsArray.buf.length - 1) ){
 			s = nsIgoResult();
-		}
-		else if ( nsIndex >= 0 ){
+		} else if ( nsIndex >= 0 ){
 			s = (nsIndex + 1) + '手目';
 		}
-		nsSetInfo('move', s);//修正
+		nsSetInfo('.move', s);//修正
 	}
 }
 

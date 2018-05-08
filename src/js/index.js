@@ -4,7 +4,7 @@ import h from 'hyperscript';
 import '../css/style.scss';
 
 function setupBottom(root) {
-  const bottom = root.appendChild(h('div#bottom'));
+  const bottom = root.appendChild(h('div.bottom'));
 
   const soundSelect = h('div.sound-select', [
     h('input', {type: 'checkbox',
@@ -34,29 +34,28 @@ function setupBottom(root) {
     }
     moveArrow.appendChild(h(`span.${name}`, [img]));
   }
-  bottom.appendChild(h('p.move#move'));
-  bottom.appendChild(h('textarea#comment'));
+  bottom.appendChild(h('p.move'));
+  bottom.appendChild(h('textarea.comment'));
 }
 
 function setupBoard(root) {
-  const board = root.appendChild(h('div#board'));
-  board.appendChild(h('span#p1type'));
-  board.appendChild(h('span#p1name'));
-  board.appendChild(h('span#p1title'));
-  board.appendChild(h('span#p1title2'));
-  board.appendChild(h('span#p2type'));
-  board.appendChild(h('span#p2name'));
-  board.appendChild(h('span#p2title'));
-  board.appendChild(h('span#p2title2'));
+  const board = root.appendChild(h('div.board'));
+  board.appendChild(h('span.p1type'));
+  board.appendChild(h('span.p1name'));
+  board.appendChild(h('span.p1title'));
+  board.appendChild(h('span.p1title2'));
+  board.appendChild(h('span.p2type'));
+  board.appendChild(h('span.p2name'));
+  board.appendChild(h('span.p2title'));
+  board.appendChild(h('span.p2title2'));
 }
 
 function setupTop(root) {
-  const top = root.appendChild(h('div#top'));
+  const top = root.appendChild(h('div.top'));
   top.appendChild(h('p.date', [
-    h('span#scyear'),
-    h('span#sctitle'),
-    h('span#scstage'),
-    h('span#scstage2'),
+    h('span.scyear'),
+    h('span.sctitle'),
+    h('span.scstage'),
   ]));
 }
 

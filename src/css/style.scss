@@ -1,6 +1,7 @@
 .responsive-kifu {
   background-image: url('../img/backgroud.gif');
-  border: 2px ridge #000000;
+  border: 2px solid rgba(0, 0, 0, 0);
+  box-shadow: 0 0 8px #d7af00;
   display: none;
   max-width: 600px;
   &.show {
@@ -20,13 +21,14 @@
   }
 }
 
-#board {
-  background-image: url("../img/board.jpg");
+.board {
+  background-image: url('../img/board.jpg');
+  box-shadow: 0 0 8px #d7af00;
   height: 400px;
-  position:relative;
+  position: relative;
 }
 
-#bottom {
+.bottom {
   margin-top: 12px;
   width: 600px;
   height: auto;
@@ -42,45 +44,46 @@
     span { margin: 0 4px; }
   }
 
-  textarea#comment{
+  textarea.comment{
     border: 0;
     box-shadow: 0 0 8px #d7af00;
     height: 85px;
     margin: 0 1%;
     margin-bottom: 2%;
 	  overflow-y: scroll;
+    padding: .5rem;
 	  width: 98%;
   }
 }
 
-#p1type {
+.p1type {
   position: absolute; left:80%; top:55%;
 }
 
-#p1name {
+.p1name {
   position: absolute; left:80%; top:60%;font-size:13px;
 }
 
-#p1title {
+.p1title {
   position: absolute; left:80.5%; top:60%;
 }
 
-#p1title2 {
+.p1title2 {
   position: absolute; left:80.5%; top:65%;
 }
 
-#p2type {
+.p2type {
   position: absolute; left:15px; top:30%;
 }
 
-#p2name {
+.p2name {
   position: absolute; left:12px; top:35%;font-size:13px;
 }
 
-#p2title {
+.p2title {
   position: absolute; left:15px; top:139px;
 }
 
-#p2title2 {
+.p2title2 {
   position: absolute; left:15px; top:166px;
 }

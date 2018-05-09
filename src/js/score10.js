@@ -7,7 +7,6 @@ import {cmMoveMark} from './shogi13';
 var nsArray = new Array();
 var nsIndex = -1;// -1 っすか。
 var nsInter;
-var nsDraw;
 var nsSoundEnabled = false;
 var nsSoundRequest = false;
 var nsSoundName = null;
@@ -49,8 +48,8 @@ export function loadKif(content) {
 }
 
 // 打音セット
-export function nsSetSound(name){
-	if ( Audio ){
+export function nsSetSound(name) {
+	if ( Audio ) {
 		nsAudio = new Array();
 		for ( var i = 0; i < 8; i++ ){
 			var audio = new Audio(name);
@@ -59,18 +58,17 @@ export function nsSetSound(name){
 			audio.load();
 			nsAudio.push(audio);
 		}
-	}
-	else{
+	}	else {
 		nsSoundName = name;
 	}
 }
 
-export function nsSoundToggle(elem) {
-	nsSoundEnabled = elem.checked;
+export function nsSoundToggle(flag) {
+	nsSoundEnabled = flag;
 }
 
 // 情報をセット
-function nsSetInfo(q, value){
+function nsSetInfo(q, value) {
 	var e = document.querySelector(q);
 	if ( e != null ){
 		e.innerText = value;
@@ -79,12 +77,12 @@ function nsSetInfo(q, value){
 }
 
 // スピードセット
-function nsSetSpeed(speed){
+function nsSetSpeed(speed) {
 	nsSpeedCoeff = speed;
 }
 
 // 棋譜を配列に整形
-function nsMakeScore(str){
+function nsMakeScore(str) {
 	var res = new Array();
 	res["buf"] = new Array();
 
@@ -246,26 +244,28 @@ function nsMakeScore(str){
 
 
 // マーカー移動描画
-function nsDelayDraw(){
-	// マーカー移動
-	if ( nsIndex >= 0 ){
-		nsDraw(nsArray.buf[nsIndex]);
-		nsSound();
-	}
+function nsDelayDraw(view) {
+  return () => {
+	  // マーカー移動
+	  if ( nsIndex >= 0 ){
+		  view.sgDraw(nsArray.buf[nsIndex]);
+		  nsSound();
+	  }
 
-	// 将棋の最終結果遅延表示
-	if ( (nsType != 'i') && (nsIndex >= nsArray.buf.length - 1) ){
-		// 最終手の移動完了と同時に表示
-		nsSetInfo('.move', nsShogiResult());
-		// 最終手の移動完了よりさらに遅らせる場合
-		//var s = "nsSetInfo('bante', '" + nsShogiResult() + "')";
-		//setTimeout(s, 500);
-	}
+	  // 将棋の最終結果遅延表示
+	  if ( (nsType != 'i') && (nsIndex >= nsArray.buf.length - 1) ){
+		  // 最終手の移動完了と同時に表示
+		  nsSetInfo('.move', nsShogiResult());
+		  // 最終手の移動完了よりさらに遅らせる場合
+		  //var s = "nsSetInfo('bante', '" + nsShogiResult() + "')";
+		  //setTimeout(s, 500);
+	  }
+  };
 }
 
 // index 番目の手番へ
-function nsSetIndex(draw, index){
-	nsDraw = draw;
+function nsSetIndex(view, index) {
+  const draw = view.sgDraw.bind(view);
 	if (index != nsIndex){
 		nsIndex = index;
 
@@ -275,19 +275,17 @@ function nsSetIndex(draw, index){
 				// 囲碁の場合はそのまま
 				draw(nsArray.buf[nsIndex]);
 				nsSound();
-			}
-			else{
+			} else {
 				// 将棋の場合は遅延描画
 				draw((nsIndex > 0)? nsArray.buf[nsIndex - 1]: null);
-				nsAnalyzeMarkPos(nsArray.buf[nsIndex].p,
+				nsAnalyzeMarkPos(view, nsArray.buf[nsIndex].p,
 								 (nsIndex > 1)? nsArray.buf[nsIndex- 1].p: nsInitialField);
-				setTimeout(nsDelayDraw, 500);
+				setTimeout(nsDelayDraw(view), 500);
 			}
-		}
-		else{
+		} else {
 			//draw(null);
 			draw(nsArray.buf[-1]);
-			cmMoveMark(0, 0);
+			view.cmMoveMark(0, 0);
 		}
 
 		// ステップ数表示
@@ -301,15 +299,9 @@ function nsSetIndex(draw, index){
 	}
 }
 
-
-
 // 結果を文字列に変換
-function nsShogiResult(){
+function nsShogiResult() {
 	var res = (nsIndex + 1) + '手　';
-
-
-
-
 	switch ( nsArray.Result ){
 	case '1':
 		var p1 = nsSplitName(nsArray.Player1);
@@ -327,7 +319,7 @@ function nsShogiResult(){
 }
 
 // 姓名・タイトルを取得
-function nsSplitName(text){
+function nsSplitName(text) {
 	var res = new Array();
 	var p = text.split(' ');
 
@@ -354,27 +346,28 @@ function nsSplitName(text){
 }
 
 // 自動再生処理
-function nsInterval() {
-	if ( ++nsSpeedCounter >= nsSpeedCoeff ){
-		nsStep(nsDraw, 1);
-		if ( nsIndex >= nsArray.buf.length - 1 ){
-			clearInterval(nsInter);
-			var e = document.getElementById('playbutton');
-			e.src = require("../img/move_item05.png");
-		}
-		nsSpeedCounter = 0;
-	}
+function nsInterval(view) {
+  return () => {
+	  if ( ++nsSpeedCounter >= nsSpeedCoeff ){
+		  nsStep(view, 1);
+		  if ( nsIndex >= nsArray.buf.length - 1 ){
+			  clearInterval(nsInter);
+			  var e = document.getElementById('playbutton');
+			  e.src = require("../img/move_item05.png");
+		  }
+		  nsSpeedCounter = 0;
+	  }
+  };
 }
 
 // 再生
-export function nsPlay(draw){
+export function nsPlay(view) {
 	var src = '';
-	if ( nsInter == null ){
-		nsDraw = draw;
+	if ( nsInter == null ) {
 		// 最初は即座に描画
-		nsInterval();
+		nsInterval(view)();
 		// タイマーセット
-		nsInter = setInterval(nsInterval, 1200);
+		nsInter = setInterval(nsInterval(view), 1200);
 		src = require("../img/move_item05a.png");
 	} else {
 		clearInterval(nsInter);
@@ -386,42 +379,42 @@ export function nsPlay(draw){
 }
 
 // 一時停止
-function nsPause(){
+function nsPause() {
 	clearInterval(nsInter);
 }
 
 // n手進める
-export function nsStep(draw, n){
+export function nsStep(view, n) {
 	if ( nsSoundEnabled ){
 		nsSoundRequest = true;
 	}
-	nsSetIndex(draw, Math.min(nsIndex + n, nsArray.buf.length - 1));
+	nsSetIndex(view, Math.min(nsIndex + n, nsArray.buf.length - 1));
 }
 
 // n手戻す
-export function nsBack(draw, n){
-	nsSetIndex(draw, Math.max(nsIndex - n, -1));
+export function nsBack(view, n) {
+	nsSetIndex(view, Math.max(nsIndex - n, -1));
 }
 
 // 先頭へ
-export function nsHead(draw){
-	nsSetIndex(draw, -1);
+export function nsHead(view) {
+	nsSetIndex(view, -1);
 }
 
 // 末尾へ
-export function nsTail(draw){
-	nsSetIndex(draw, nsArray.buf.length - 1);
+export function nsTail(view) {
+	nsSetIndex(view, nsArray.buf.length - 1);
 }
 
 // マーカー位置計算
-function nsAnalyzeMarkPos(curr, prev){
-	var x0 = 0;
-	var y0 = 0;
+function nsAnalyzeMarkPos(view, curr, prev) {
+	let x0 = 0;
+	let y0 = 0;
 	if ( (curr != null) && (prev != null) ){
-		var x1 = parseInt(curr.substr(81 * 2,     1));
-		var y1 = parseInt(curr.substr(81 * 2 + 1, 1));
-		var pos1 = (x1 - 1) + (y1 - 1) * 9;
-		for ( var i = 0; i < 81; i++ ){
+		let x1 = parseInt(curr.substr(81 * 2,     1));
+		let y1 = parseInt(curr.substr(81 * 2 + 1, 1));
+		let pos1 = (x1 - 1) + (y1 - 1) * 9;
+		for ( let i = 0; i < 81; i++ ){
 			if ( (curr.substr(i * 2, 2) != prev.substr(i * 2, 2)) && (i != pos1) ){
 				x0 = (i % 9) + 1;
 				y0 = Math.floor(i / 9) + 1;
@@ -429,11 +422,11 @@ function nsAnalyzeMarkPos(curr, prev){
 			}
 		}
 	}
-	cmMoveMark(x0, y0);
+	view.cmMoveMark(x0, y0);
 }
 
 // 音
-function nsSound(){
+function nsSound() {
 	if ( nsSoundRequest ){
 		if ( nsAudio != null ){
 			nsAudio[nsAudioIndex].play();
@@ -451,14 +444,9 @@ function nsSound(){
 	}
 }
 
-function nsSearch(){
-	alert('未実装です\n'+'この局面は\n'+ nsArray.buf[nsIndex].p +'\nです。\n全文検索がんばりましょう!');
-}
-
 // 全角数字(１...９)を数字(1...9)に変換する
 // 1...9も許容する(そのまま返す)
-function jp2num(str)
-{
+function jp2num(str) {
 	for (var i = 1; i <= 9; i++) {
 		if ((str == digitJP[i]) || (i == str)) {
 			return i;
@@ -469,9 +457,8 @@ function jp2num(str)
 
 // 漢数字(一...十八)を数字(1...18)に変換する
 // 1...9も許容する(そのまま返す)
-function cn2num(str)
-{
-	for (var i = 1; i <= 18; i++) {
+function cn2num(str) {
+	for (let i = 1; i <= 18; i++) {
 		if ((str == digitCN[i]) || (i == str)) {
 			return i;
 		}
@@ -479,9 +466,8 @@ function cn2num(str)
 	return 0;
 }
 
-function koma2num(str)
-{
-	for (var i = 2; i <= 15; i++) {
+function koma2num(str) {
+	for (let i = 2; i <= 15; i++) {
 		if (str == komaJP[i]) {
 			return i;
 		}

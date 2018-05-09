@@ -1,14 +1,15 @@
-import {sgInit, sgResize, sgDraw} from './shogi13';
+import {KifuView} from './shogi13';
 import {nsSetSound, Start, loadKif, nsBack, nsHead, nsTail, nsStep, nsPlay, nsSoundToggle} from './score10';
 import h from 'hyperscript';
 import '../css/style.scss';
 
-function setupBottom(root) {
+function setupBottom(root, view) {
   const bottom = root.appendChild(h('div.bottom'));
 
+  const input = h('input', {type: 'checkbox'});
+  input.onchange = () => nsSoundToggle(input.checked);
   const soundSelect = h('div.sound-select', [
-    h('input', {type: 'checkbox',
-                onchange: () => nsSoundToggle(i)}),
+    input,
     h('label', '駒音再生')
   ]);
   bottom.appendChild(soundSelect);
@@ -17,13 +18,13 @@ function setupBottom(root) {
   bottom.appendChild(moveArrow);
 
   const items = [
-    {name: 'item02', f: () => nsHead(sgDraw)},
-    {name: 'item03', f: () => nsBack(sgDraw, 10)},
-    {name: 'item04', f: () => nsBack(sgDraw, 1)},
-    {name: 'item05', f: () => nsPlay(sgDraw)},
-    {name: 'item06', f: () => nsStep(sgDraw, 1)},
-    {name: 'item07', f: () => nsStep(sgDraw, 10)},
-    {name: 'item08', f: () => nsTail(sgDraw)},
+    {name: 'item02', f: () => nsHead(view)},
+    {name: 'item03', f: () => nsBack(view, 10)},
+    {name: 'item04', f: () => nsBack(view, 1)},
+    {name: 'item05', f: () => nsPlay(view)},
+    {name: 'item06', f: () => nsStep(view, 1)},
+    {name: 'item07', f: () => nsStep(view, 10)},
+    {name: 'item08', f: () => nsTail(view)},
   ];
   for (const item of items) {
     const name = item.name;
@@ -66,12 +67,12 @@ window.onload = () => {
     fig.textContent = '';
     setupTop(fig);
     setupBoard(fig);
-    setupBottom(fig);
-    sgInit();
+    let kifuView = new KifuView();
+    setupBottom(fig, kifuView);
     loadKif(kif);
     // Start('../data/pagagm584.kif','s');
     nsSetSound(require('../sound/sound1.mp3'));
-    document.querySelector('body').onResize = sgResize;
+    document.querySelector('body').onResize = kifuView.sgResize.bind(kifuView);
     fig.classList.add('show');
   }
 }

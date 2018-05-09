@@ -1,3 +1,5 @@
+import h from 'hyperscript';
+
 //
 // 将棋棋譜描画処理
 //
@@ -44,12 +46,7 @@ export function sgInit(){
 	}
 
 	// マーカー追加
-	var e = document.createElement('img');
-	e.id  = 'mark';
-	e.src = sgPic.mark.src;
-	e.alt = '';
-	e.width  = 35;
-	e.height = 38;
+	var e = h('img', {id: 'mark', src: sgPic.mark.src, alt: '', width: 35, height: 38});
 	if(window.innerWidth<620){
 		e.width=35*(window.innerWidth/620);e.height=38*(window.innerWidth/620);
 	}
@@ -65,12 +62,7 @@ export function sgInit(){
 		handH12=handH1*ratio;handH22=handH2*ratio;
 	}
 	for ( var i = 0; i < 81; i++ ){
-		var e = document.createElement('img');
-		e.id  = 'g' + i;
-		e.src = sgPic.emp.src;
-		e.alt = '';
-		e.width  = 36;
-		e.height = 43;
+		var e = h('img', {id: 'g' + i, src: sgPic.emp.src, alt: '', width: 36, height: 43});
 		if(window.innerWidth<620){
 			e.width=36*ratio;e.height=43*ratio;
 		}
@@ -85,12 +77,7 @@ export function sgInit(){
 	}
 	// 持駒の表示位置
 	for ( var i = handCount - 1; i >= 0; i-- ){
-		var e = document.createElement('img');
-		e.id  = 'ga' + i;
-		e.src = sgPic.emp.src;
-		e.alt = '';
-		e.width  = 36*ratio;
-		e.height = 43*ratio;
+		var e = h('img', {id: 'ga' + i, src: sgPic.emp.src, alt: '', width: 36*ratio, height: 43*ratio});
 		e.style.position = 'absolute';
 		e.style.left = baseX + 345*ratio + ((i % 3) * pieceW2) + 'px';
 		e.style.top  = baseY + 255*ratio + (Math.floor(i / 3) * handH12) + 'px';
@@ -98,14 +85,9 @@ export function sgInit(){
 	}
 	// 持駒の表示位置
 	for ( var i = handCount - 1; i >= 0; i-- ){
-		var e = document.createElement('img');
-		e.id  = 'gb' + i;
-		e.src = sgPic.emp.src;
-		e.alt = '';
-		e.width  = 36*ratio;
-		e.height = 43*ratio;
+		var e = h('img', {id: 'gb' + i, src: sgPic.emp.src, alt: '', width: 36*ratio, height: 43*ratio});
 		e.style.position = 'absolute';
-    	e.style.left = baseX - 60*ratio - ((i % 3) * pieceW2) + 'px';
+    e.style.left = baseX - 60*ratio - ((i % 3) * pieceW2) + 'px';
 		e.style.top  = baseY + 60*ratio - (Math.floor(i / 3) * handH22) + 'px';
 		parent.appendChild(e);
 	}
